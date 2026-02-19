@@ -1,5 +1,6 @@
 package com.aman.ai_platform.role.dto.response;
 
+import com.aman.ai_platform.role.entity.Role;
 import com.aman.ai_platform.role.entity.RoleStatus;
 import lombok.*;
 

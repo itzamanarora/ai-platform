@@ -1,11 +1,13 @@
 package com.aman.ai_platform.user.controller;
 
-import com.aman.ai_platform.user.entity.User;
+import com.aman.ai_platform.user.dto.request.CreateUserDTO;
+import com.aman.ai_platform.user.dto.response.UserResponseDTO;
 import com.aman.ai_platform.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/users")
@@ -18,7 +20,14 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user){
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponseDTO createUser(@Valid @RequestBody CreateUserDTO createUserDTO){
+        return userService.createUser(createUserDTO);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserResponseDTO> getAllUsers() {
+        return userService.getAllUsers();
     }
 }

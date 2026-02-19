@@ -1,5 +1,6 @@
 package com.aman.ai_platform.role.service;
 
+import com.aman.ai_platform.role.dto.mapper.RoleMapper;
 import com.aman.ai_platform.role.dto.request.CreateRoleDTO;
 import com.aman.ai_platform.role.dto.response.RoleResponseDTO;
 import com.aman.ai_platform.role.entity.Role;
@@ -7,6 +8,8 @@ import com.aman.ai_platform.role.entity.RoleStatus;
 import com.aman.ai_platform.role.repository.RoleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class RoleService {
@@ -19,23 +22,35 @@ public class RoleService {
 
     @Transactional
     public RoleResponseDTO createRole(CreateRoleDTO createRoleDTO){
-        try {
-            Role role = Role.builder()
-                    .name(createRoleDTO.getName())
-                    .status(RoleStatus.ACTIVE)
-                    .build();
+        String trimmedName = createRoleDTO
+                .getName()
+                .trim();
 
-            Role savedRole = roleRepository.save(role);
-
-            return RoleResponseDTO.builder()
-                    .id(savedRole.getId())
-                    .name(savedRole.getName())
-                    .status(savedRole.getStatus())
-                    .createdAt(savedRole.getCreatedAt())
-                    .build();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if(roleRepository.existsByNameIgnoreCase(trimmedName)) {
+            throw new IllegalStateException("Role Already Exists");
         }
+
+        Role role = Role.builder()
+                .name(trimmedName.toUpperCase())
+                .status(RoleStatus.ACTIVE)
+                .build();
+
+        Role savedRole = roleRepository.save(role);
+
+        return RoleMapper.roleDTO(savedRole);
+    }
+
+    public List<RoleResponseDTO> getRoles(String status){
+        List<Role> roles;
+
+        if(status != null) {
+            roles = roleRepository.findByStatus(RoleStatus.valueOf(status.toUpperCase()));
+        } else {
+            roles = roleRepository.findAll();
+        }
+
+        return roles.stream()
+                .map(RoleMapper::roleDTO)
+                .toList();
     }
 }
