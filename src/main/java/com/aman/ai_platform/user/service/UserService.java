@@ -8,6 +8,7 @@
     import com.aman.ai_platform.user.entity.User;
     import com.aman.ai_platform.user.entity.UserStatus;
     import com.aman.ai_platform.user.repository.UserRepository;
+    import org.springframework.security.crypto.password.PasswordEncoder;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +18,13 @@
     public class UserService {
 
         private final UserRepository userRepository;
-
         private final RoleRepository roleRepository;
+        private final PasswordEncoder passwordEncoder;
 
-        public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+        public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
             this.userRepository = userRepository;
             this.roleRepository = roleRepository;
+            this.passwordEncoder = passwordEncoder;
         }
 
         @Transactional
@@ -39,6 +41,7 @@
             );
             User user = UserMapper.toEntity(createUserDTO);
             user.setEmail(email);
+            user.setPassword(passwordEncoder.encode(createUserDTO.getPassword()));
             user.setStatus(UserStatus.ACTIVE);
             User savedUser = userRepository.save(user);
 
