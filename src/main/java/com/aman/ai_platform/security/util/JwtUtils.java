@@ -32,7 +32,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String exractEmail(String token) {
+    public String extractEmail(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
@@ -41,7 +41,7 @@ public class JwtUtils {
                 .getSubject();
     }
 
-    public Boolean isTokenValid(String token) {
+    public boolean isTokenValid(String token) {
         try {
             Jwts.parser()
                     .verifyWith(secretKey)

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class RoleService {
@@ -52,5 +53,50 @@ public class RoleService {
         return roles.stream()
                 .map(RoleMapper::roleDTO)
                 .toList();
+    }
+
+    @Transactional
+    public RoleResponseDTO updateRole(UUID id, CreateRoleDTO updateRoleDTO) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Role not found"));
+
+        String trimmedName = updateRoleDTO
+                .getName()
+                .trim();
+
+        String normalizedName = trimmedName.toUpperCase();
+
+        if (!normalizedName.equalsIgnoreCase(role.getName())
+                && roleRepository.existsByNameIgnoreCase(trimmedName)) {
+            throw new IllegalStateException("Role Already Exists");
+        }
+
+        role.setName(normalizedName);
+
+        Role updatedRole = roleRepository.save(role);
+
+        return RoleMapper.roleDTO(updatedRole);
+    }
+
+    @Transactional
+    public RoleResponseDTO updateRoleStatus(UUID id, String status) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Role not found"));
+
+        RoleStatus newStatus = RoleStatus.valueOf(status.toUpperCase());
+        role.setStatus(newStatus);
+
+        Role updatedRole = roleRepository.save(role);
+
+        return RoleMapper.roleDTO(updatedRole);
+    }
+
+    @Transactional
+    public void softDeleteRole(UUID id) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Role not found"));
+
+        role.setStatus(RoleStatus.DELETED);
+        roleRepository.save(role);
     }
 }

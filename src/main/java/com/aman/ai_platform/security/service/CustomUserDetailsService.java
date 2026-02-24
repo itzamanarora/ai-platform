@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmailIgnorecase(username).orElseThrow(
+        User user = userRepository.findByEmailIgnoreCase(username).orElseThrow(
                 () -> new UsernameNotFoundException("User not found with this email.")
         );
 
