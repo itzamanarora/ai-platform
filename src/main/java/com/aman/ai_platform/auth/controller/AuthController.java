@@ -1,10 +1,35 @@
-// package com.aman.ai_platform.auth.controller;
+package com.aman.ai_platform.auth.controller;
 
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RestController;
+import com.aman.ai_platform.auth.dto.mapper.LoginMapper;
+import com.aman.ai_platform.auth.dto.request.LoginRequestDTO;
+import com.aman.ai_platform.auth.dto.response.LoginResponseDTO;
+import com.aman.ai_platform.auth.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-// @RestController
-// @RequestMapping("/api/auth/")
-// public class AuthController {
-//         // private final
-// }
+
+@Tag(name = "Auth", description = "Authentication endpoints")
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+        
+
+        private final AuthService authService;
+
+        public AuthController(AuthService authService) {
+            this.authService = authService;
+        }
+
+        @PostMapping("/login")
+        @ResponseStatus(HttpStatus.OK)
+        @Operation(summary = "Login", description = "Authenticate with email/password and return a JWT token")
+        public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequestDTO) {
+            return LoginMapper.toLoginResponseDTO(authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword()));
+        }
+}

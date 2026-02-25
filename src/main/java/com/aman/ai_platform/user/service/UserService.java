@@ -43,6 +43,7 @@
             user.setEmail(email);
             user.setPassword(passwordEncoder.encode(createUserDTO.getPassword()));
             user.setStatus(UserStatus.ACTIVE);
+            user.setRole(role);
             User savedUser = userRepository.save(user);
 
             return UserMapper.userResponseDTO(savedUser);
