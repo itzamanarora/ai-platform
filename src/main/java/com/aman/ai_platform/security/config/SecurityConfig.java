@@ -22,13 +22,14 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/actuator/**", 
+                                "/api/admin/**", 
+                                "/api/role/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/actuator/**", "/api/admin/**").hasRole("ADMIN")
+                                "/v3/api-docs/**").hasRole("ADMIN")
+                                .requestMatchers("/api/user/**").hasRole("USER")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .addFilterBefore()

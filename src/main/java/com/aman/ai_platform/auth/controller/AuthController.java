@@ -1,6 +1,5 @@
 package com.aman.ai_platform.auth.controller;
 
-import com.aman.ai_platform.auth.dto.mapper.LoginMapper;
 import com.aman.ai_platform.auth.dto.request.LoginRequestDTO;
 import com.aman.ai_platform.auth.dto.response.LoginResponseDTO;
 import com.aman.ai_platform.auth.service.AuthService;
@@ -30,6 +29,10 @@ public class AuthController {
         @ResponseStatus(HttpStatus.OK)
         @Operation(summary = "Login", description = "Authenticate with email/password and return a JWT token")
         public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequestDTO) {
-            return LoginMapper.toLoginResponseDTO(authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword()));
+            return authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
         }
+
+//        @PostMapping("/register")
+//        @ResponseStatus(HttpStatus.CREATED)
+
 }
