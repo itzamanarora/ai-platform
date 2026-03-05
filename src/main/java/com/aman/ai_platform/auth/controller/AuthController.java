@@ -1,6 +1,7 @@
 package com.aman.ai_platform.auth.controller;
 
 import com.aman.ai_platform.auth.dto.request.LoginRequestDTO;
+import com.aman.ai_platform.auth.dto.request.RegisterRequestDTO;
 import com.aman.ai_platform.auth.dto.response.LoginResponseDTO;
 import com.aman.ai_platform.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +33,11 @@ public class AuthController {
             return authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
         }
 
-//        @PostMapping("/register")
-//        @ResponseStatus(HttpStatus.CREATED)
+            @PostMapping("/register")
+        @ResponseStatus(HttpStatus.CREATED)
+        @Operation(summary = "Register", description = "Register user with email/password and then login again.")
+        public void register(@RequestBody RegisterRequestDTO registerRequestDTO) {
+            authService.register(registerRequestDTO);
+        }
 
 }
